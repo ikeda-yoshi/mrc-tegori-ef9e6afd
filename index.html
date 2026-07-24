@@ -8,69 +8,58 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{
-  --bg0:#05081f; --bg1:#0a0f33; --navy:#0c1236; --card:#111a44; --card2:#0e1638;
-  --gold:#f0d488; --gold2:#c8a24a; --goldhi:#ffd700; --goldline:rgba(224,190,110,.30);
-  --ink:#eef2ff; --sub:#9fb0d6; --dim:#6f7ea8;
-  --red:#ff5a4d; --reddeep:#b51700; --redsoft:rgba(181,23,0,.16);
-  --green1:#39d900; --green2:#259600; --teal:#1f9d6b; --blue:#2f6bd8;
+  --bg0:#05081f;--bg1:#0a0f33;--navy:#0c1236;--card:#111a44;--card2:#0e1638;
+  --gold:#f0d488;--gold2:#c8a24a;--goldhi:#ffd700;--goldline:rgba(224,190,110,.30);
+  --ink:#eef2ff;--sub:#9fb0d6;--dim:#6f7ea8;
+  --red:#ff5a4d;--reddeep:#b51700;--green1:#39d900;--green2:#259600;--teal:#1f9d6b;
   --radius:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:"Noto Sans JP",system-ui,sans-serif; color:var(--ink); line-height:1.7;
-  background:
-    radial-gradient(1100px 520px at 78% -8%, rgba(224,190,110,.16), transparent 60%),
-    radial-gradient(900px 500px at 8% 0%, rgba(47,107,216,.14), transparent 55%),
-    linear-gradient(180deg, var(--bg1), var(--bg0));
-  background-attachment:fixed; -webkit-font-smoothing:antialiased;
-}
+body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);line-height:1.7;
+  background:radial-gradient(1100px 520px at 78% -8%,rgba(224,190,110,.16),transparent 60%),
+    radial-gradient(900px 500px at 8% 0%,rgba(47,107,216,.14),transparent 55%),
+    linear-gradient(180deg,var(--bg1),var(--bg0));background-attachment:fixed;-webkit-font-smoothing:antialiased}
 .serif{font-family:"Noto Serif JP",serif}
-.mk{background:linear-gradient(transparent 62%, rgba(240,212,136,.38) 0);padding:0 2px}
+.wrap{max-width:940px;margin:0 auto;padding:clamp(14px,3vw,26px)}
+.hidden{display:none!important}
 
 /* header */
-.header{padding:20px clamp(16px,4vw,44px) 16px; border-bottom:1px solid var(--goldline);
-  background:linear-gradient(180deg, rgba(10,15,52,.9), rgba(8,12,40,.4));}
-.head-in{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.header{padding:20px clamp(16px,4vw,40px) 15px;border-bottom:1px solid var(--goldline);
+  background:linear-gradient(180deg,rgba(10,15,52,.9),rgba(8,12,40,.35))}
+.head-in{max-width:940px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
 .brand .k{color:var(--gold);font-size:11px;letter-spacing:.22em;font-weight:700}
-.brand h1{font-size:clamp(19px,3vw,27px);font-weight:900;letter-spacing:.01em;margin-top:5px;line-height:1.35}
+.brand h1{font-size:clamp(18px,2.8vw,25px);font-weight:900;margin-top:5px;line-height:1.35}
 .brand h1 .g{color:var(--goldhi)}
 .confid{font-size:10.5px;color:var(--dim);border:1px solid var(--goldline);border-radius:99px;padding:4px 11px;white-space:nowrap}
 
-.wrap{max-width:1200px;margin:0 auto;padding:clamp(14px,3vw,26px);
-  display:grid;grid-template-columns:1fr 428px;gap:22px;align-items:start}
-@media(max-width:980px){.wrap{grid-template-columns:1fr}}
-
-/* consult bar */
-.consult{background:linear-gradient(135deg,var(--card),var(--card2));
-  border:1px solid var(--goldline);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;
-  box-shadow:0 12px 34px rgba(0,0,0,.35)}
-.consult .cl{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-bottom:9px}
-.frow{display:flex;gap:10px;flex-wrap:wrap}
-.frow input{flex:1;min-width:150px;background:rgba(5,8,28,.6);border:1px solid var(--goldline);
-  border-radius:10px;color:var(--ink);padding:10px 12px;font-size:13.5px;font-family:inherit}
-.frow input::placeholder{color:var(--dim)}
-.frow input:focus{outline:none;border-color:var(--gold)}
+/* steps indicator */
+.steps{display:flex;gap:8px;max-width:940px;margin:16px auto 0;padding:0 clamp(16px,3vw,26px)}
+.step{flex:1;text-align:center;font-size:11px;font-weight:700;color:var(--dim);padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02)}
+.step.on{color:#20150a;background:linear-gradient(135deg,var(--gold),var(--gold2));border-color:transparent}
+.step .n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.15);font-size:10px;margin-right:5px;vertical-align:middle}
 
 /* cards */
 .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--goldline);
   border-radius:var(--radius);padding:clamp(15px,2.3vw,22px);margin-bottom:16px;box-shadow:0 12px 34px rgba(0,0,0,.32)}
+.consult .cl,.scalebar .cl{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-bottom:11px}
+.frow{display:flex;gap:10px;flex-wrap:wrap}
+.frow input{flex:1;min-width:150px;background:rgba(5,8,28,.6);border:1px solid var(--goldline);border-radius:10px;color:var(--ink);padding:11px 13px;font-size:14px;font-family:inherit}
+.frow input::placeholder{color:var(--dim)}
+.frow input:focus{outline:none;border-color:var(--gold)}
 .sec-head{display:flex;align-items:center;gap:11px}
-.sec-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#20150a;font-weight:900;font-size:14px;
-  width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:none;box-shadow:0 3px 10px rgba(200,162,74,.4)}
+.sec-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#20150a;font-weight:900;font-size:14px;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:none}
 .sec-head h2{font-size:clamp(15px,2.1vw,18px);font-weight:800}
 .sec-sub{color:var(--sub);font-size:12px;margin:4px 0 14px 39px}
 @media(max-width:520px){.sec-sub{margin-left:0}}
-
-.scalebar .cl{margin-bottom:11px}
-
 .q{padding:12px 0;border-top:1px solid rgba(255,255,255,.06)}
 .q:first-of-type{border-top:none}
 .q .qt{font-size:13.5px;font-weight:700;margin-bottom:9px}
 .opts{display:flex;flex-wrap:wrap;gap:7px}
-.opt{border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);color:var(--sub);
-  border-radius:999px;padding:8px 14px;font-size:12.5px;cursor:pointer;transition:.15s;font-weight:600;user-select:none;line-height:1.3}
+.opt{border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03);color:var(--sub);border-radius:999px;padding:9px 15px;font-size:13px;cursor:pointer;transition:.15s;font-weight:600;line-height:1.3;user-select:none}
 .opt:hover{border-color:var(--gold);color:var(--gold)}
 .opt.on{color:#fff;border-color:transparent}
 .opt.good{background:linear-gradient(135deg,#1f9d6b,#127a52)}
@@ -78,92 +67,99 @@ body{
 .opt.warn{background:linear-gradient(135deg,var(--red),var(--reddeep))}
 .opt.neut{background:linear-gradient(135deg,#3a4a86,#2b376a)}
 
-/* ===== result board ===== */
-.results{position:sticky;top:14px}
-@media(max-width:980px){.results{position:static}}
-.progress{font-size:11px;color:var(--dim);font-weight:700;text-align:right;margin-bottom:8px}
+/* sticky footer nav */
+.navbar{position:sticky;bottom:0;margin-top:6px;background:linear-gradient(180deg,rgba(10,15,52,.4),rgba(8,12,40,.96));
+  border-top:1px solid var(--goldline);padding:13px clamp(16px,3vw,26px);backdrop-filter:blur(6px);z-index:20}
+.navbar .in{max-width:940px;margin:0 auto;display:flex;align-items:center;gap:14px;justify-content:space-between}
+.prog{flex:1}
+.prog .pt{font-size:11.5px;color:var(--sub);font-weight:700;margin-bottom:5px}
+.prog .pbar{height:8px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden}
+.prog .pbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--goldhi));width:0;transition:width .3s}
+.btnbig{border:none;cursor:pointer;font-family:inherit;font-weight:900;font-size:14.5px;padding:14px 26px;border-radius:12px;white-space:nowrap;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#20150a;box-shadow:0 8px 22px rgba(200,162,74,.35)}
+.btnbig:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btnghost{background:transparent;border:1px solid var(--goldline);color:var(--gold);font-weight:700;font-size:13px;padding:12px 18px;border-radius:11px;cursor:pointer;font-family:inherit}
 
-.hero{position:relative;overflow:hidden;border-radius:var(--radius);padding:24px 22px;
-  background:linear-gradient(160deg,#0e1642,#0a0f33 60%);border:1px solid var(--goldline);
-  box-shadow:0 16px 40px rgba(0,0,0,.45)}
-.hero::before{content:"";position:absolute;top:-60px;right:-40px;width:220px;height:220px;
-  background:radial-gradient(circle,rgba(240,212,136,.22),transparent 65%);pointer-events:none}
-.hero .htitle{font-size:11.5px;color:var(--gold);font-weight:700;letter-spacing:.1em;position:relative}
-.hero .bignum{font-size:clamp(34px,8vw,52px);font-weight:900;line-height:1.05;margin:6px 0 2px;color:#fff;position:relative}
-.hero .bignum.loss{color:#ff6b5e;text-shadow:0 3px 22px rgba(181,23,0,.5)}
-.hero .bignum small{font-size:.36em;font-weight:700;color:var(--gold)}
-.hero .note{font-size:12px;color:#b7c5e6;position:relative}
-.gauge{margin-top:16px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;position:relative}
-.gauge .grow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-.gauge .glab{font-size:12px;color:#cdd9ea;font-weight:700}
-.gauge .gval{font-size:21px;font-weight:900;font-family:"Noto Serif JP",serif}
-.bar{height:9px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden}
-.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold2),var(--goldhi));transition:width .4s}
-.rating{font-size:12px;margin-top:8px;font-weight:800}
+/* ===== screen 2 results ===== */
+.result-hero{position:relative;overflow:hidden;border-radius:20px;padding:clamp(22px,4vw,36px);text-align:center;
+  background:linear-gradient(160deg,#0e1642,#0a0f33 62%);border:1px solid var(--goldline);box-shadow:0 18px 46px rgba(0,0,0,.5);margin-bottom:18px}
+.result-hero::before{content:"";position:absolute;top:-80px;right:-40px;width:280px;height:280px;background:radial-gradient(circle,rgba(240,212,136,.2),transparent 65%)}
+.result-hero .who{font-size:13px;color:var(--gold);font-weight:700;position:relative}
+.result-hero .lead{font-size:clamp(14px,2.4vw,17px);color:#c9d6f2;margin:8px 0 2px;position:relative}
+.result-hero .big{font-size:clamp(48px,13vw,96px);font-weight:900;line-height:1;color:#ff6b5e;text-shadow:0 4px 30px rgba(181,23,0,.5);position:relative;margin:6px 0}
+.result-hero .big small{font-size:.28em;color:var(--gold);font-weight:700}
+.result-hero .subnote{font-size:13px;color:#b7c5e6;position:relative}
 
-.rcard{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--goldline);
-  border-radius:var(--radius);padding:17px 18px;margin-top:14px;box-shadow:0 12px 30px rgba(0,0,0,.32)}
-.rcard h3{font-size:12.5px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--gold)}
-.rcard h3::before{content:"";width:14px;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.rcard{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--goldline);border-radius:var(--radius);padding:20px;box-shadow:0 12px 30px rgba(0,0,0,.32)}
+.rcard h3{font-size:13px;font-weight:800;margin-bottom:16px;color:var(--gold);display:flex;align-items:center;gap:8px}
+.rcard h3::before{content:"";width:16px;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
 
-.years{display:flex;align-items:flex-end;gap:9px;height:122px;margin-top:4px}
+/* big circular score */
+.scorewrap{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring{position:relative;width:172px;height:172px}
+.ring svg{transform:rotate(-90deg)}
+.ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .center .num{font-size:52px;font-weight:900;font-family:"Noto Serif JP",serif;line-height:1}
+.ring .center .lb{font-size:11px;color:var(--sub);font-weight:700}
+.scorewrap .rating{margin-top:12px;font-size:13.5px;font-weight:800;text-align:center}
+
+/* big bars */
+.years{display:flex;align-items:flex-end;gap:12px;height:190px}
 .ybar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
-.ybar .yb{width:100%;background:linear-gradient(180deg,#ff6b5e,#b51700);border-radius:7px 7px 0 0;min-height:6px;transition:height .45s;box-shadow:0 0 16px rgba(181,23,0,.35)}
-.ybar .yv{font-size:11px;font-weight:800;color:#ff8377;margin-bottom:5px;font-family:"Noto Serif JP",serif}
-.ybar .yl{font-size:10.5px;color:var(--sub);margin-top:6px;font-weight:700}
+.ybar .yv{font-size:14px;font-weight:900;color:#ff8377;margin-bottom:6px;font-family:"Noto Serif JP",serif}
+.ybar .yb{width:100%;background:linear-gradient(180deg,#ff6b5e,#b51700);border-radius:8px 8px 0 0;min-height:8px;transition:height .5s;box-shadow:0 0 20px rgba(181,23,0,.4)}
+.ybar .yl{font-size:11.5px;color:var(--sub);margin-top:8px;font-weight:700}
 
-.donutwrap{display:flex;align-items:center;gap:16px}
-.legend{font-size:12px}
-.legend div{display:flex;align-items:center;gap:7px;margin-bottom:6px;color:var(--ink)}
-.legend .sw{width:11px;height:11px;border-radius:3px;flex:none}
-.legend b{font-weight:800;font-family:"Noto Serif JP",serif}
+/* donut big */
+.donutwrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center}
+.legend{font-size:13px}
+.legend div{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.legend .sw{width:13px;height:13px;border-radius:3px;flex:none}
+.legend b{font-weight:800;font-family:"Noto Serif JP",serif;font-size:1.1em}
 
-.miss .row{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid rgba(255,255,255,.06);font-size:12.5px}
+.miss .row{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-top:1px solid rgba(255,255,255,.06);font-size:13.5px}
 .miss .row:first-child{border-top:none}
 .miss .row .m{font-weight:600}
 .miss .row .v{color:#ff8377;font-weight:800;white-space:nowrap;font-family:"Noto Serif JP",serif}
-.miss .empty{color:var(--teal);font-weight:700;text-align:center;padding:8px}
-
-.typebox{border:1px solid var(--goldline);background:rgba(47,107,216,.1);border-radius:12px;padding:13px 15px}
+.miss .empty{color:var(--teal);font-weight:700;text-align:center;padding:10px}
+.typebox{border:1px solid var(--goldline);background:rgba(47,107,216,.1);border-radius:12px;padding:16px 18px}
 .typebox .tl{font-size:11px;color:var(--gold);font-weight:800}
-.typebox .tt{font-size:16px;font-weight:900;margin:2px 0 5px}
-.typebox .td{font-size:12px;color:#c4d0ec}
+.typebox .tt{font-size:18px;font-weight:900;margin:3px 0 6px}
+.typebox .td{font-size:13px;color:#c4d0ec}
 
 /* plans */
-.plan-hero{position:relative;border:1.5px solid var(--gold);border-radius:14px;padding:18px;
-  background:linear-gradient(160deg,rgba(240,212,136,.14),rgba(12,18,54,.5));box-shadow:0 10px 30px rgba(200,162,74,.18)}
-.plan-hero::after{content:"いちばん結果が出る本命プラン";position:absolute;top:-11px;left:16px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#20150a;font-size:10.5px;font-weight:900;padding:3px 11px;border-radius:99px}
-.plan-hero .pn{font-size:16px;font-weight:900;margin-top:2px}
-.plan-hero .pp{font-size:12.5px;color:var(--gold)}
-.plan-hero .pdesc{font-size:11.5px;color:#c4d0ec;margin:5px 0 8px}
-.plan-hero .pr{font-size:13px;font-weight:800}
+.plan-hero{position:relative;border:1.5px solid var(--gold);border-radius:14px;padding:20px;background:linear-gradient(160deg,rgba(240,212,136,.14),rgba(12,18,54,.5));box-shadow:0 10px 30px rgba(200,162,74,.18);margin-top:6px}
+.plan-hero::after{content:"いちばん結果が出る本命プラン";position:absolute;top:-11px;left:18px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#20150a;font-size:11px;font-weight:900;padding:3px 12px;border-radius:99px}
+.plan-hero .pn{font-size:18px;font-weight:900;margin-top:2px}
+.plan-hero .pp{font-size:13px;color:var(--gold)}
+.plan-hero .pdesc{font-size:12.5px;color:#c4d0ec;margin:6px 0 9px}
+.plan-hero .pr{font-size:14px;font-weight:800}
 .plan-hero .pr b{color:#ffd07a;font-family:"Noto Serif JP",serif;font-size:1.15em}
-
-.plan-sub{border:1px solid var(--goldline);border-radius:12px;padding:13px 15px;margin-top:10px;background:rgba(255,255,255,.02)}
-.plan-sub .pn{font-size:13.5px;font-weight:800}
-.plan-sub .pn .tag{font-size:10px;color:var(--gold);font-weight:700;margin-left:6px}
-.plan-sub .pp{font-size:12px;color:var(--sub)}
-.plan-sub .pr{font-size:12px;font-weight:700;color:#d7e0f5;margin-top:2px}
+.plan-sub{border:1px solid var(--goldline);border-radius:12px;padding:15px 17px;margin-top:11px;background:rgba(255,255,255,.02)}
+.plan-sub .pn{font-size:14.5px;font-weight:800}
+.plan-sub .pn .tag{font-size:10.5px;color:var(--gold);font-weight:700;margin-left:7px}
+.plan-sub .pp{font-size:12.5px;color:var(--sub)}
+.plan-sub .pr{font-size:12.5px;font-weight:700;color:#d7e0f5;margin-top:3px}
 .plan-sub .pr b{color:#ffd07a;font-family:"Noto Serif JP",serif}
-.budget{font-size:11px;color:var(--dim);text-align:center;margin-top:10px}
+.budget{font-size:11.5px;color:var(--dim);text-align:center;margin-top:11px}
+.miniwarn{background:rgba(181,23,0,.1);border:1px solid rgba(181,23,0,.3);color:#ffb3ab;font-size:11.5px;border-radius:10px;padding:9px 12px;margin-bottom:14px;font-weight:600}
 
-.cta{display:block;text-align:center;background:linear-gradient(135deg,var(--green1),var(--green2));
-  color:#fff;font-weight:900;padding:15px;border-radius:12px;margin-top:14px;text-decoration:none;font-size:14.5px;
-  box-shadow:0 10px 24px rgba(37,150,0,.4);border:none;width:100%;cursor:pointer}
+.savebar{text-align:center;margin:22px 0 8px}
+.savebar .q2{font-size:15px;font-weight:800;margin-bottom:12px}
+.cta{display:inline-block;background:linear-gradient(135deg,var(--green1),var(--green2));color:#fff;font-weight:900;padding:16px 34px;border-radius:12px;font-size:15px;box-shadow:0 10px 26px rgba(37,150,0,.42);border:none;cursor:pointer;font-family:inherit}
 .cta:hover{filter:brightness(1.06)}
-.save{display:block;width:100%;margin-top:10px;background:transparent;border:1px solid var(--goldline);
-  color:var(--gold);font-weight:700;padding:11px;border-radius:11px;font-size:12.5px;cursor:pointer;font-family:inherit}
-.save:hover{border-color:var(--gold);background:rgba(240,212,136,.06)}
-
-.miniwarn{background:rgba(181,23,0,.1);border:1px solid rgba(181,23,0,.3);color:#ffb3ab;font-size:11px;
-  border-radius:10px;padding:8px 11px;margin-bottom:13px;font-weight:600}
-.disc{font-size:10.5px;color:var(--dim);line-height:1.6;margin-top:13px;padding:0 3px}
-.footdisc{max-width:1200px;margin:0 auto;padding:8px clamp(16px,3vw,26px) 44px;font-size:10.5px;color:var(--dim);line-height:1.7}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#20150a;font-weight:800;font-size:13px;
-  padding:12px 22px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.35s;pointer-events:none;z-index:50}
+.cta:disabled{opacity:.6;cursor:wait}
+.linkbox{margin-top:14px;font-size:12.5px;color:var(--sub);display:none}
+.linkbox a{color:var(--goldhi);word-break:break-all}
+.disc{font-size:10.5px;color:var(--dim);line-height:1.6;margin:16px auto 0;max-width:940px;padding:0 4px}
+.footdisc{max-width:940px;margin:0 auto;padding:10px clamp(16px,3vw,26px) 44px;font-size:10.5px;color:var(--dim);line-height:1.7}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#20150a;font-weight:800;font-size:13px;padding:12px 22px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.35s;pointer-events:none;z-index:50}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* PDF page (offscreen capture target) */
+#pdfPage{position:fixed;left:-99999px;top:0;width:794px;background:#0a0f33;color:#eef2ff;font-family:"Noto Sans JP",sans-serif;padding:44px 48px}
 </style>
 </head>
 <body>
@@ -178,348 +174,362 @@ body{
   </div>
 </div>
 
-<div class="wrap">
+<div class="steps">
+  <div class="step on" id="stp1"><span class="n">1</span>ヒアリング</div>
+  <div class="step" id="stp2"><span class="n">2</span>診断結果</div>
+  <div class="step" id="stp3"><span class="n">3</span>PDFで受け取る</div>
+</div>
 
-  <!-- LEFT : hearing -->
-  <div class="left">
-    <div class="consult">
-      <div class="cl">■ 相談メモ（ヒアリングしながら入力）</div>
-      <div class="frow">
-        <input id="fName" type="text" placeholder="お名前（例：山田 太郎 様）">
-        <input id="fCompany" type="text" placeholder="会社名・業種（任意）">
-      </div>
-    </div>
-
-    <div class="card scalebar">
-      <div class="cl" style="color:var(--gold);font-size:11px;font-weight:700;letter-spacing:.08em;margin-bottom:11px">■ まず、会社のおおよその規模を伺います</div>
-      <div class="opts" id="scaleOpts"></div>
-    </div>
-
-    <div class="card">
-      <div class="sec-head"><div class="sec-badge">A</div><h2>今の支援体制のチェック</h2></div>
-      <div class="sec-sub">「今の顧問税理士まわりで、手残りが最大化されているか」を一緒に確認します</div>
-      <div id="secA"></div>
-    </div>
-
-    <div class="card">
-      <div class="sec-head"><div class="sec-badge">B</div><h2>節税メソッドの実施状況</h2></div>
-      <div class="sec-sub">やっていない・知らないものが、そのまま「取りこぼしている金額」になります</div>
-      <div id="secB"></div>
-    </div>
-
-    <div class="card">
-      <div class="sec-head"><div class="sec-badge">C</div><h2>資産運用の現状</h2></div>
-      <div class="sec-sub">守った(節税した)お金を、増やせているかを確認します</div>
-      <div id="secC"></div>
+<!-- ===== SCREEN 1 : hearing ===== -->
+<div class="wrap" id="screen1">
+  <div class="card consult">
+    <div class="cl">■ 相談メモ（ヒアリングしながら入力）</div>
+    <div class="frow">
+      <input id="fName" type="text" placeholder="お名前（例：山田 太郎 様）">
+      <input id="fCompany" type="text" placeholder="会社名・業種（任意）">
     </div>
   </div>
+  <div class="card scalebar">
+    <div class="cl">■ まず、会社のおおよその規模を伺います</div>
+    <div class="opts" id="scaleOpts"></div>
+  </div>
+  <div class="card">
+    <div class="sec-head"><div class="sec-badge">A</div><h2>今の支援体制のチェック</h2></div>
+    <div class="sec-sub">「今の顧問税理士まわりで、手残りが最大化されているか」を一緒に確認します</div>
+    <div id="secA"></div>
+  </div>
+  <div class="card">
+    <div class="sec-head"><div class="sec-badge">B</div><h2>節税メソッドの実施状況</h2></div>
+    <div class="sec-sub">やっていない・知らないものが、そのまま「取りこぼしている金額」になります</div>
+    <div id="secB"></div>
+  </div>
+  <div class="card">
+    <div class="sec-head"><div class="sec-badge">C</div><h2>資産運用の現状</h2></div>
+    <div class="sec-sub">守った(節税した)お金を、増やせているかを確認します</div>
+    <div id="secC"></div>
+  </div>
+</div>
+<div class="navbar" id="navbar">
+  <div class="in">
+    <div class="prog">
+      <div class="pt" id="progText">0 / 0 問</div>
+      <div class="pbar"><i id="progBar"></i></div>
+    </div>
+    <button class="btnbig" id="revealBtn" disabled>診断結果を見る →</button>
+  </div>
+</div>
 
-  <!-- RIGHT : presentation board -->
-  <div class="results">
-    <div class="progress" id="progress">0 / 0 問</div>
-    <div class="hero">
-      <div class="htitle">年間の想定取りこぼし額</div>
-      <div class="bignum serif" id="lossYear">— <small>万円/年</small></div>
-      <div class="note" id="lossNote">ヒアリングを進めると、この方の数字が表示されます</div>
-      <div class="gauge">
-        <div class="grow"><span class="glab">手残り最適化スコア</span><span class="gval" id="scoreVal">—</span></div>
-        <div class="bar"><i id="scoreBar" style="width:0%"></i></div>
-        <div class="rating" id="rating"></div>
+<!-- ===== SCREEN 2 : results ===== -->
+<div class="wrap hidden" id="screen2">
+  <div class="result-hero">
+    <div class="who" id="rWho">診断結果</div>
+    <div class="lead">このまま気づかず経営を続けた場合</div>
+    <div class="big serif" id="rBig">—<small> 万円/年</small></div>
+    <div class="subnote" id="rNote"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="rcard scorewrap">
+      <h3 style="align-self:flex-start">手残り最適化スコア</h3>
+      <div class="ring">
+        <svg width="172" height="172" viewBox="0 0 172 172">
+          <circle cx="86" cy="86" r="74" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="14"/>
+          <circle cx="86" cy="86" r="74" fill="none" stroke="url(#gg)" stroke-width="14" stroke-linecap="round" id="scoreRing"/>
+          <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c8a24a"/><stop offset="1" stop-color="#ffd700"/></linearGradient></defs>
+        </svg>
+        <div class="center"><div class="num serif" id="rScore">—</div><div class="lb">/ 100点</div></div>
       </div>
+      <div class="rating" id="rRating"></div>
     </div>
 
     <div class="rcard">
-      <h3>このまま何もしないと（累積）</h3>
-      <div class="years" id="years"></div>
+      <h3>このまま何もしないと（累積の損失）</h3>
+      <div class="years" id="rYears"></div>
     </div>
+  </div>
 
+  <div class="grid2">
     <div class="rcard">
       <h3>取りこぼしの内訳</h3>
       <div class="donutwrap">
-        <svg width="112" height="112" viewBox="0 0 112 112">
-          <circle cx="56" cy="56" r="44" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="15"/>
-          <circle cx="56" cy="56" r="44" fill="none" stroke="#b51700" stroke-width="15" stroke-linecap="round" transform="rotate(-90 56 56)" id="arc1"/>
-          <circle cx="56" cy="56" r="44" fill="none" stroke="#f0d488" stroke-width="15" stroke-linecap="round" transform="rotate(-90 56 56)" id="arc2"/>
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="58" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="19"/>
+          <circle cx="75" cy="75" r="58" fill="none" stroke="#b51700" stroke-width="19" stroke-linecap="round" transform="rotate(-90 75 75)" id="arc1"/>
+          <circle cx="75" cy="75" r="58" fill="none" stroke="#f0d488" stroke-width="19" stroke-linecap="round" transform="rotate(-90 75 75)" id="arc2"/>
         </svg>
-        <div class="legend" id="legend"></div>
+        <div class="legend" id="rLegend"></div>
       </div>
     </div>
-
-    <div class="rcard" id="missCard" style="display:none">
-      <h3>この方が取りこぼしている打ち手</h3>
-      <div class="miss" id="miss"></div>
+    <div class="rcard" id="rTypeCard">
+      <h3>診断タイプ</h3>
+      <div class="typebox"><div class="tt" id="rTypeTitle"></div><div class="td" id="rTypeDesc"></div></div>
+      <div class="miss" id="rMiss" style="margin-top:14px"></div>
     </div>
-
-    <div class="rcard" id="typeCard" style="display:none">
-      <div class="typebox">
-        <div class="tl">診断タイプ</div>
-        <div class="tt" id="typeTitle"></div>
-        <div class="td" id="typeDesc"></div>
-      </div>
-    </div>
-
-    <div class="rcard">
-      <div class="miniwarn">※表示金額は一般的な前提に基づく概算(試算)です。正確な金額と適用可否は、この個別相談でお伝えします。</div>
-      <h3>この差を、いちばん確実に埋める方法</h3>
-      <div id="plans"></div>
-      <button class="cta" id="ctaBtn">この内容で「あなた専用の手残りプラン」を組む</button>
-      <button class="save" id="saveBtn">▽ この診断結果を保存する</button>
-    </div>
-
-    <div class="disc" id="disc"></div>
   </div>
+
+  <div class="rcard">
+    <div class="miniwarn">※表示金額は一般的な前提に基づく概算(試算)です。正確な金額と適用可否は、この個別相談でお伝えします。</div>
+    <h3>この差を、いちばん確実に埋める方法</h3>
+    <div id="rPlans"></div>
+  </div>
+
+  <div class="savebar">
+    <div class="q2">診断結果を保存しますか？</div>
+    <button class="cta" id="saveBtn">診断結果をPDFで受け取る（無料プレゼント）</button>
+    <div class="linkbox" id="linkbox"></div>
+    <div style="margin-top:14px"><button class="btnghost" id="backBtn">← 回答をやり直す</button></div>
+  </div>
+  <div class="disc" id="disc"></div>
 </div>
 
 <div class="footdisc">
   本シミュレーションは一般的な前提に基づく概算であり、実際の税額・運用成果を保証・予測するものではありません。将来の運用成果を示唆・予測・保証するものではありません。試算結果の正確性・完全性を保証するものではありません。税務・投資の最終判断はご自身の責任で行い、具体的な適用可否は個別にご相談ください。本ツールは特定商品の売買を推奨・勧誘するものではありません。
 </div>
 <div class="toast" id="toast">保存しました</div>
+<div id="pdfPage"></div>
 
 <script>
-/* =========================================================================
-   前提定数（すべて概算の仮値・永江さん監修で確定する）
-   年商factor=1.0（年商3000〜5000万）基準の「年間効果額(万円)」
-   ========================================================================= */
 const CONFIG = {
-  scales: [
-    {t:'〜3000万', f:0.6},{t:'3000〜5000万', f:1.0},{t:'5000万〜1億', f:1.6},
-    {t:'1億〜3億', f:2.6},{t:'3億〜', f:4.0},
-  ],
-  defaultScaleIndex: 1,
-  yieldTarget: 0.07,
-  horizon: 20,
-  // 個別相談のオファーは大前提「プレミアム」。年間=本命／半年=まずは始めたい方向け。スタンダードは表に出さない。
-  planHero:   {name:'プレミアム（年間プラン）', price:990000, desc:'サポート期間が最も長く、39メソッドを1年かけて確実に実装できます'},
-  planSecond: {name:'プレミアム（半年プラン）', price:770000, tag:'まずは半年で始めたい方へ'},
-  // データ保存先（後日デプロイするGoogle Apps Script Web AppのURLをここに設定）
-  saveEndpoint: '',
+  scales:[{t:'〜3000万',f:0.6},{t:'3000〜5000万',f:1.0},{t:'5000万〜1億',f:1.6},{t:'1億〜3億',f:2.6},{t:'3億〜',f:4.0}],
+  defaultScaleIndex:1, yieldTarget:0.07, horizon:20,
+  planHero:{name:'プレミアム（年間プラン）',price:990000,desc:'サポート期間が最も長く、39メソッドを1年かけて確実に実装できます'},
+  planSecond:{name:'プレミアム（半年プラン）',price:770000,tag:'まずは半年で始めたい方へ'},
+  saveEndpoint:'', // GASデプロイ後にWeb App URLを設定
 };
-
-const QA = [
-  {id:'a1', q:'顧問税理士との付き合い年数', o:[['1年未満',0],['1〜3年',0],['3〜10年',1],['10年以上',2]]},
-  {id:'a2', q:'税理士は節税を向こうから提案してくれる', o:[['してくる',0],['聞かないとしない',2],['ほぼしない',3]]},
-  {id:'a3', q:'事前確定届出給与', o:[['やっている',0],['やっていない',2],['知らない',3]]},
-  {id:'a4', q:'退職金まで考えた役員報酬設計', o:[['やっている',0],['やっていない',2],['知らない',3]]},
-  {id:'a5', q:'税理士の経費判断', o:[['ゆるい(攻める)',0],['普通',1],['厳しい(守り一辺倒)',2]]},
-  {id:'a6', q:'税理士の税務調査対策', o:[['強い',0],['普通',1],['弱い・不安',2]]},
-  {id:'a7', q:'過去の税務調査の経験', o:[['ある(指摘あり)',2],['ある(問題なし)',0],['ない',0]]},
-  {id:'a8', q:'補助金の情報をくれる人がいる', o:[['いる',0],['いない',2]]},
-  {id:'a9', q:'助成金の情報をくれる人がいる', o:[['いる',0],['いない',2]]},
-  {id:'a10',q:'経営にお得な情報(制度・優遇税制)をくれる人がいる', o:[['いる',0],['いない',2]]},
-  {id:'a11',q:'優良な投資案件の情報をくれる人がいる', o:[['いる',0],['いない',2]]},
-  {id:'a12',q:'税理士以外に相談できる「お金の参謀」がいる', o:[['いる',0],['いない',2]]},
-  {id:'a13',q:'決算前に節税の打ち手を一緒に考えてくれる', o:[['くれる',0],['くれない',2]]},
-  {id:'a14',q:'顧問料に見合う提案をもらえている実感', o:[['ある',0],['ない・不明',2]]},
+const QA=[
+  {id:'a1',q:'顧問税理士との付き合い年数',o:[['1年未満',0],['1〜3年',0],['3〜10年',1],['10年以上',2]]},
+  {id:'a2',q:'税理士は節税を向こうから提案してくれる',o:[['してくる',0],['聞かないとしない',2],['ほぼしない',3]]},
+  {id:'a3',q:'事前確定届出給与',o:[['やっている',0],['やっていない',2],['知らない',3]]},
+  {id:'a4',q:'退職金まで考えた役員報酬設計',o:[['やっている',0],['やっていない',2],['知らない',3]]},
+  {id:'a5',q:'税理士の経費判断',o:[['ゆるい(攻める)',0],['普通',1],['厳しい(守り一辺倒)',2]]},
+  {id:'a6',q:'税理士の税務調査対策',o:[['強い',0],['普通',1],['弱い・不安',2]]},
+  {id:'a7',q:'過去の税務調査の経験',o:[['ある(指摘あり)',2],['ある(問題なし)',0],['ない',0]]},
+  {id:'a8',q:'補助金の情報をくれる人がいる',o:[['いる',0],['いない',2]]},
+  {id:'a9',q:'助成金の情報をくれる人がいる',o:[['いる',0],['いない',2]]},
+  {id:'a10',q:'経営にお得な情報(制度・優遇税制)をくれる人がいる',o:[['いる',0],['いない',2]]},
+  {id:'a11',q:'優良な投資案件の情報をくれる人がいる',o:[['いる',0],['いない',2]]},
+  {id:'a12',q:'税理士以外に相談できる「お金の参謀」がいる',o:[['いる',0],['いない',2]]},
+  {id:'a13',q:'決算前に節税の打ち手を一緒に考えてくれる',o:[['くれる',0],['くれない',2]]},
+  {id:'a14',q:'顧問料に見合う提案をもらえている実感',o:[['ある',0],['ない・不明',2]]},
 ];
-const QB = [
-  {id:'b1', q:'役員報酬と社会保険料の最適化', e:100},
-  {id:'b2', q:'旅費規程(日当)の活用', e:100},
-  {id:'b3', q:'出張日当の非課税枠を使い切っている', e:100, custom:[['使い切っている',0,0],['一部',1.5,50],['使っていない',3,100]]},
-  {id:'b4', q:'倒産防止共済(最大800万損金)', e:80, labels:['加入済み','未加入','知らない']},
-  {id:'b5', q:'小規模企業共済', e:30, labels:['加入済み','未加入','知らない']},
-  {id:'b6', q:'一時所得・海外生保の非課税枠(家族分散)', e:50},
-  {id:'b7', q:'即時償却(経営強化税制)の活用', e:60},
-  {id:'b8', q:'不動産・ワンルームによる所得圧縮', e:40},
-  {id:'b9', q:'福利厚生プランの整備', e:20},
-  {id:'b10',q:'家族への所得分散(役員・従業員化)', e:50},
-  {id:'b11',q:'経費計上の再定義(グレーゾーンの適正活用)', e:40},
-  {id:'b12',q:'エンジェル税制・研究開発費等の活用', e:30},
-  {id:'b13',q:'贈与・事業承継の対策', e:40},
+const QB=[
+  {id:'b1',q:'役員報酬と社会保険料の最適化',e:100},{id:'b2',q:'旅費規程(日当)の活用',e:100},
+  {id:'b3',q:'出張日当の非課税枠を使い切っている',e:100,custom:[['使い切っている',0,0],['一部',1.5,50],['使っていない',3,100]]},
+  {id:'b4',q:'倒産防止共済(最大800万損金)',e:80,labels:['加入済み','未加入','知らない']},
+  {id:'b5',q:'小規模企業共済',e:30,labels:['加入済み','未加入','知らない']},
+  {id:'b6',q:'一時所得・海外生保の非課税枠(家族分散)',e:50},{id:'b7',q:'即時償却(経営強化税制)の活用',e:60},
+  {id:'b8',q:'不動産・ワンルームによる所得圧縮',e:40},{id:'b9',q:'福利厚生プランの整備',e:20},
+  {id:'b10',q:'家族への所得分散(役員・従業員化)',e:50},{id:'b11',q:'経費計上の再定義(グレーゾーンの適正活用)',e:40},
+  {id:'b12',q:'エンジェル税制・研究開発費等の活用',e:30},{id:'b13',q:'贈与・事業承継の対策',e:40},
 ];
-const QC = [
-  {id:'c1', q:'余剰資金は今どこにあるか', o:[['ほぼ預金',2.5,1],['一部運用',1,0],['積極運用',0,0]]},
-  {id:'c2', q:'現在の運用の利回り実感', o:[['ほぼ0〜1%',2.5,1],['2〜4%',1,0],['5%以上',0,0],['わからない',1.5,1]]},
-  {id:'c3', q:'新NISA枠を使い切っている', o:[['使い切っている',0,0],['一部',1.5,0],['使っていない',2.5,1]]},
-  {id:'c4', q:'会社の内部留保を運用に回している', o:[['回している',0,0],['寝かせている',2.5,1]]},
-  {id:'c5', q:'海外の運用商品を持っている', o:[['ある',0,0],['ない・興味あり',1.5,0]]},
-  {id:'c6', q:'過去に投資で失敗した経験', o:[['ある(大きい)',1.5,0],['ある(軽微)',0.5,0],['ない',0,0]]},
-  {id:'c7', q:'「増やし方」を相談できる相手がいる', o:[['いる',0,0],['いない',2,1]]},
-  {id:'c8', q:'現在の資産に「このままで良い」と思えるか', o:[['思える',0,0],['不安',2,0]]},
+const QC=[
+  {id:'c1',q:'余剰資金は今どこにあるか',o:[['ほぼ預金',2.5,1],['一部運用',1,0],['積極運用',0,0]]},
+  {id:'c2',q:'現在の運用の利回り実感',o:[['ほぼ0〜1%',2.5,1],['2〜4%',1,0],['5%以上',0,0],['わからない',1.5,1]]},
+  {id:'c3',q:'新NISA枠を使い切っている',o:[['使い切っている',0,0],['一部',1.5,0],['使っていない',2.5,1]]},
+  {id:'c4',q:'会社の内部留保を運用に回している',o:[['回している',0,0],['寝かせている',2.5,1]]},
+  {id:'c5',q:'海外の運用商品を持っている',o:[['ある',0,0],['ない・興味あり',1.5,0]]},
+  {id:'c6',q:'過去に投資で失敗した経験',o:[['ある(大きい)',1.5,0],['ある(軽微)',0.5,0],['ない',0,0]]},
+  {id:'c7',q:'「増やし方」を相談できる相手がいる',o:[['いる',0,0],['いない',2,1]]},
+  {id:'c8',q:'現在の資産に「このままで良い」と思えるか',o:[['思える',0,0],['不安',2,0]]},
 ];
+const state={scale:CONFIG.defaultScaleIndex,A:{},B:{},C:{}};
+const $=id=>document.getElementById(id);
+const man=v=>Math.round(v).toLocaleString('ja-JP');
+const yen=v=>'¥'+Math.round(v).toLocaleString('ja-JP');
+const TOTAL=QA.length+QB.length+QC.length;
 
-const state = { scale: CONFIG.defaultScaleIndex, A:{}, B:{}, C:{} };
-const $ = id => document.getElementById(id);
-const man = v => Math.round(v).toLocaleString('ja-JP');
-const yen = v => '¥' + Math.round(v).toLocaleString('ja-JP');
+function optBtn(t,g,id,idx){const b=document.createElement('span');b.className='opt';b.textContent=t;b.dataset.group=g;b.dataset.id=id;b.dataset.idx=idx;return b;}
+function buildScale(){const box=$('scaleOpts');CONFIG.scales.forEach((s,i)=>box.appendChild(optBtn(s.t,'S','scale',i)));}
+function buildQ(list,boxId,g,cf){const box=$(boxId);list.forEach(it=>{const q=document.createElement('div');q.className='q';q.innerHTML=`<div class="qt">${it.q}</div>`;const o=document.createElement('div');o.className='opts';cf(it).forEach((c,i)=>o.appendChild(optBtn(c,g,it.id,i)));q.appendChild(o);box.appendChild(q);});}
 
-function optBtn(text, group, id, idx){
-  const b=document.createElement('span'); b.className='opt'; b.textContent=text;
-  b.dataset.group=group; b.dataset.id=id; b.dataset.idx=idx; return b;
-}
-function buildScale(){ const box=$('scaleOpts'); CONFIG.scales.forEach((s,i)=>{ const b=optBtn(s.t,'S','scale',i); box.appendChild(b); }); }
-function buildQ(list, boxId, group, choicesFn){
-  const box=$(boxId);
-  list.forEach(item=>{
-    const q=document.createElement('div'); q.className='q';
-    q.innerHTML=`<div class="qt">${item.q}</div>`;
-    const opts=document.createElement('div'); opts.className='opts';
-    choicesFn(item).forEach((c,idx)=>opts.appendChild(optBtn(c,group,item.id,idx)));
-    q.appendChild(opts); box.appendChild(q);
-  });
-}
-
-document.addEventListener('click', e=>{
-  const b=e.target.closest('.opt'); if(!b) return;
-  const {group,id,idx}=b.dataset;
+document.addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b)return;const{group,id,idx}=b.dataset;
   b.parentElement.querySelectorAll('.opt').forEach(x=>x.classList.remove('on','good','mid','warn','neut'));
-  if(group==='S') state.scale=+idx; else state[group][id]=+idx;
-  render();
-});
+  if(group==='S')state.scale=+idx;else state[group][id]=+idx;
+  paintSelection(b,group,id,+idx);updateProgress();});
+
+function colorClass(gap,pos){if(gap>=2.4)return'warn';if(gap>=1)return'mid';return pos?'good':'neut';}
+function paintSelection(b,group,id,idx){b.classList.add('on');
+  if(group==='S')b.classList.add('neut');
+  else if(group==='A')b.classList.add(colorClass(QA.find(x=>x.id===id).o[idx][1],true));
+  else if(group==='B'){const it=QB.find(x=>x.id===id);b.classList.add(it.custom?colorClass(it.custom[idx][1],true):(idx===0?'good':'warn'));}
+  else if(group==='C')b.classList.add(colorClass(QC.find(x=>x.id===id).o[idx][1],true));}
+
+function answeredCount(){return Object.keys(state.A).length+Object.keys(state.B).length+Object.keys(state.C).length;}
+function updateProgress(){const a=answeredCount();$('progText').textContent=`${a} / ${TOTAL} 問`;$('progBar').style.width=(a/TOTAL*100)+'%';
+  const btn=$('revealBtn');btn.disabled=a<TOTAL;btn.textContent=a<TOTAL?`あと ${TOTAL-a} 問で結果が見られます`:'診断結果を見る →';}
 
 function compute(){
-  const f=CONFIG.scales[state.scale].f;
-  let answered=0; const totalQ=QA.length+QB.length+QC.length;
-  let aGap=0,holes=0;
-  QA.forEach(it=>{ const s=state.A[it.id]; if(s==null)return; answered++; const g=it.o[s][1]; aGap+=g; if(g>=2)holes++; });
-  let bGap=0,lossMan=0,unknown=0; const missList=[];
-  QB.forEach(it=>{ const s=state.B[it.id]; if(s==null)return; answered++;
-    if(it.custom){ const c=it.custom[s]; bGap+=c[1]; const y=c[2]*f; if(y>0){lossMan+=y; missList.push([it.q,y]);} }
-    else { if(s===0){} else { bGap+=3; const y=it.e*f; lossMan+=y; missList.push([it.q,y]); if(s===2)unknown++; } }
-  });
-  let cGap=0,notInvest=0;
-  QC.forEach(it=>{ const s=state.C[it.id]; if(s==null)return; answered++; cGap+=it.o[s][1]; if(it.o[s][2])notInvest++; });
+  const f=CONFIG.scales[state.scale].f;let aGap=0,holes=0;
+  QA.forEach(it=>{const s=state.A[it.id];if(s==null)return;const g=it.o[s][1];aGap+=g;if(g>=2)holes++;});
+  let bGap=0,lossMan=0,unknown=0;const missList=[];
+  QB.forEach(it=>{const s=state.B[it.id];if(s==null)return;
+    if(it.custom){const c=it.custom[s];bGap+=c[1];const y=c[2]*f;if(y>0){lossMan+=y;missList.push([it.q,y]);}}
+    else{if(s!==0){bGap+=3;const y=it.e*f;lossMan+=y;missList.push([it.q,y]);if(s===2)unknown++;}}});
+  let cGap=0;QC.forEach(it=>{const s=state.C[it.id];if(s==null)return;cGap+=it.o[s][1];});
   const score=Math.max(0,Math.min(100,Math.round(100-(aGap+bGap+cGap))));
-  const pmtYen=lossMan*10000, r=CONFIG.yieldTarget, n=CONFIG.horizon;
-  const fv=r>0?pmtYen*((Math.pow(1+r,n)-1)/r):pmtYen*n;
-  const investGainMan=Math.max(0,(fv-pmtYen*n))/10000;
-  let type=null;
-  if(answered>0){
-    const s=[
-      {v:bGap,title:'節税・取りこぼし型',desc:'まだ使えていない節税の打ち手が多く、毎年の手残りに直接の伸びしろがあります。まず「守り」を固めるのが最短です。'},
-      {v:cGap*1.6,title:'運用・機会損失型',desc:'守ったお金を「増やす」流れができていません。浮いた分を運用に回すだけで、将来の資産が大きく変わります。'},
-      {v:aGap,title:'支援体制・見直し型',desc:'今の顧問体制では、手残りの最大化まで手が届いていない可能性があります。相談できる「お金の参謀」が伸びしろの鍵です。'},
-    ].sort((a,b)=>b.v-a.v);
-    if(s[0].v>0)type=s[0];
-  }
-  return {f,answered,totalQ,holes,lossMan,unknown,score,investGainMan,missList,type,aGap,bGap,cGap};
+  const pmt=lossMan*10000,r=CONFIG.yieldTarget,n=CONFIG.horizon;
+  const fv=r>0?pmt*((Math.pow(1+r,n)-1)/r):pmt*n;
+  const investGainMan=Math.max(0,(fv-pmt*n))/10000;
+  let type=null;const s=[
+    {v:bGap,title:'節税・取りこぼし型',desc:'まだ使えていない節税の打ち手が多く、毎年の手残りに直接の伸びしろがあります。まず「守り」を固めるのが最短です。'},
+    {v:cGap*1.6,title:'運用・機会損失型',desc:'守ったお金を「増やす」流れができていません。浮いた分を運用に回すだけで、将来の資産が大きく変わります。'},
+    {v:aGap,title:'支援体制・見直し型',desc:'今の顧問体制では、手残りの最大化まで手が届いていない可能性があります。相談できる「お金の参謀」が伸びしろの鍵です。'},
+  ].sort((a,b)=>b.v-a.v);if(s[0].v>0)type=s[0];
+  return{f,holes,lossMan,unknown,score,investGainMan,missList,type};
 }
 
-const C_LEN=2*Math.PI*44;
-function setArc(el,frac,offsetFrac){ const len=Math.max(0,frac)*C_LEN;
-  el.setAttribute('stroke-dasharray',`${len} ${C_LEN-len}`); el.setAttribute('stroke-dashoffset',`${-offsetFrac*C_LEN}`); }
+function setArc(el,frac,off,C){const len=Math.max(0,frac)*C;el.setAttribute('stroke-dasharray',`${len} ${C-len}`);el.setAttribute('stroke-dashoffset',`${-off*C}`);}
 
-function colorClass(gap,isPositive){
-  if(gap>=2.4) return 'warn';
-  if(gap>=1) return 'mid';
-  return isPositive?'good':'neut';
-}
-function render(){
-  document.querySelectorAll('.opt').forEach(b=>{
-    const {group,id,idx}=b.dataset; b.classList.remove('on','good','mid','warn','neut');
-    let sel = group==='S'?state.scale:state[group][id];
-    if(sel===+idx){
-      b.classList.add('on');
-      if(group==='S'){ b.classList.add('neut'); }
-      else if(group==='A'){ b.classList.add(colorClass(QA.find(x=>x.id===id).o[+idx][1],true)); }
-      else if(group==='B'){ const it=QB.find(x=>x.id===id);
-        if(it.custom){ b.classList.add(colorClass(it.custom[+idx][1],true)); }
-        else { b.classList.add(+idx===0?'good':'warn'); } }
-      else if(group==='C'){ b.classList.add(colorClass(QC.find(x=>x.id===id).o[+idx][1],true)); }
-    }
-  });
+function renderResult(){
   const d=compute();
-  $('progress').textContent=`${d.answered} / ${d.totalQ} 問`;
-  if(d.answered===0){ $('lossYear').innerHTML='— <small>万円/年</small>'; $('lossNote').textContent='ヒアリングを進めると、この方の数字が表示されます'; }
-  else{
-    $('lossYear').className='bignum serif loss'; $('lossYear').innerHTML=`${man(d.lossMan)} <small>万円/年</small>`;
-    let nt=`年間およそ ${man(d.lossMan)}万円 の手残りを取りこぼしている可能性があります`;
-    if(d.unknown>0) nt+=`／「知らない」が ${d.unknown}個 ありました`;
-    $('lossNote').textContent=nt;
-  }
-  $('scoreVal').textContent=d.answered?d.score+' 点':'—';
-  $('scoreBar').style.width=(d.answered?d.score:0)+'%';
-  const rt=$('rating');
-  if(d.answered===0)rt.textContent='';
-  else if(d.score>=80){rt.textContent='かなり最適化されています';rt.style.color='#8fe3bd';}
-  else if(d.score>=55){rt.textContent='伸びしろがあります';rt.style.color='var(--gold)';}
+  const nm=$('fName').value.trim();
+  $('rWho').textContent=nm?`${nm} の診断結果`:'診断結果';
+  $('rBig').innerHTML=`${man(d.lossMan)}<small> 万円/年</small>`;
+  let nt=`年間およそ ${man(d.lossMan)}万円 の手残りを取りこぼしている可能性があります`;
+  if(d.unknown>0)nt+=`／「知らない」が ${d.unknown}個 ありました`;
+  $('rNote').textContent=nt;
+
+  // score ring
+  const RC=2*Math.PI*74;const ring=$('scoreRing');
+  ring.setAttribute('stroke-dasharray',`${d.score/100*RC} ${RC}`);
+  $('rScore').textContent=d.score;
+  const rt=$('rRating');
+  if(d.score>=80){rt.textContent='かなり最適化されています';rt.style.color='#8fe3bd';}
+  else if(d.score>=55){rt.textContent='まだ伸びしろがあります';rt.style.color='var(--gold)';}
   else{rt.textContent='大きな取りこぼしがあります';rt.style.color='#ff8377';}
 
-  const yc=$('years'); yc.innerHTML='';
+  // years
+  const yc=$('rYears');yc.innerHTML='';
   const life=d.lossMan*CONFIG.horizon+d.investGainMan;
   const data=[['1年',d.lossMan],['5年',d.lossMan*5],['10年',d.lossMan*10],[`生涯(${CONFIG.horizon}年)`,life]];
-  const maxv=Math.max(1,...data.map(x=>x[1]));
-  data.forEach(x=>{ const w=document.createElement('div'); w.className='ybar';
-    const h=d.answered?Math.max(6,x[1]/maxv*100):6;
-    w.innerHTML=`<div class="yv">${d.answered?man(x[1]):'—'}</div><div class="yb" style="height:${h}%"></div><div class="yl">${x[0]}</div>`;
-    yc.appendChild(w); });
+  const mx=Math.max(1,...data.map(x=>x[1]));
+  data.forEach(x=>{const w=document.createElement('div');w.className='ybar';
+    w.innerHTML=`<div class="yv">${man(x[1])}</div><div class="yb" style="height:${Math.max(8,x[1]/mx*100)}%"></div><div class="yl">${x[0]}</div>`;yc.appendChild(w);});
 
-  const taxAnnual=d.lossMan, investAnnual=d.lossMan*CONFIG.yieldTarget, tot=taxAnnual+investAnnual;
-  setArc($('arc1'),tot>0?taxAnnual/tot:0,0); setArc($('arc2'),tot>0?investAnnual/tot:0,tot>0?taxAnnual/tot:0);
-  $('legend').innerHTML=`<div><span class="sw" style="background:#b51700"></span><b>${man(taxAnnual)}万円</b>／年 節税で浮く</div>
-     <div><span class="sw" style="background:#f0d488"></span><b>${man(investAnnual)}万円</b>／年 運用で増やす(概算)</div>
-     <div style="color:var(--sub);margin-top:2px">浮いた分を${CONFIG.horizon}年運用すると <b style="color:#7fe3b4">+${man(d.investGainMan)}万円</b></div>`;
+  // donut
+  const C2=2*Math.PI*58;const tax=d.lossMan,inv=d.lossMan*CONFIG.yieldTarget,tot=tax+inv;
+  setArc($('arc1'),tot>0?tax/tot:0,0,C2);setArc($('arc2'),tot>0?inv/tot:0,tot>0?tax/tot:0,C2);
+  $('rLegend').innerHTML=`<div><span class="sw" style="background:#b51700"></span><b>${man(tax)}万円</b>／年 節税で浮く</div>
+    <div><span class="sw" style="background:#f0d488"></span><b>${man(inv)}万円</b>／年 運用で増やす(概算)</div>
+    <div style="color:var(--sub)">浮いた分を${CONFIG.horizon}年運用すると <b style="color:#7fe3b4">+${man(d.investGainMan)}万円</b></div>`;
 
-  const mc=$('missCard'),ml=$('miss');
-  if(d.answered>0){ mc.style.display='block'; ml.innerHTML='';
-    if(d.missList.length===0)ml.innerHTML='<div class="empty">節税の主要な打ち手はカバーできています</div>';
-    else d.missList.slice().sort((a,b)=>b[1]-a[1]).forEach(m=>{ const row=document.createElement('div'); row.className='row';
-      row.innerHTML=`<span class="m">${m[0]}</span><span class="v">+${man(m[1])}万/年</span>`; ml.appendChild(row); });
-  } else mc.style.display='none';
+  // type + miss
+  if(d.type){$('rTypeTitle').textContent=d.type.title;$('rTypeDesc').textContent=d.type.desc;}
+  const ml=$('rMiss');ml.innerHTML='';
+  if(d.missList.length===0)ml.innerHTML='<div class="empty">節税の主要な打ち手はカバーできています</div>';
+  else d.missList.slice().sort((a,b)=>b[1]-a[1]).slice(0,6).forEach(m=>{const r=document.createElement('div');r.className='row';r.innerHTML=`<span class="m">${m[0]}</span><span class="v">+${man(m[1])}万/年</span>`;ml.appendChild(r);});
 
-  const tcard=$('typeCard');
-  if(d.type){ tcard.style.display='block'; $('typeTitle').textContent=d.type.title; $('typeDesc').textContent=d.type.desc; }
-  else tcard.style.display='none';
-
-  // plans : プレミアム年間(本命) + プレミアム半年 / スタンダードは非表示
+  // plans
   const monthly=d.lossMan*10000/12;
-  const recover=(price)=>{ if(monthly<=0||d.answered===0)return '回収の目安はヒアリング後に表示されます';
-    const m=price/monthly; return m<1?'約 <b>1ヶ月未満</b> で回収できる試算':`約 <b>${m.toFixed(1)}ヶ月</b> で回収できる試算`; };
-  $('plans').innerHTML=`
-    <div class="plan-hero">
-      <div class="pn">${CONFIG.planHero.name}</div>
-      <div class="pp">${yen(CONFIG.planHero.price)}（税込）</div>
-      <div class="pdesc">${CONFIG.planHero.desc}</div>
-      <div class="pr">${recover(CONFIG.planHero.price)}</div>
-    </div>
-    <div class="plan-sub">
-      <div class="pn">${CONFIG.planSecond.name}<span class="tag">${CONFIG.planSecond.tag}</span></div>
-      <div class="pp">${yen(CONFIG.planSecond.price)}（税込）</div>
-      <div class="pr">${recover(CONFIG.planSecond.price)}</div>
-    </div>
+  const rec=p=>{if(monthly<=0)return'回収の目安はヒアリング後に表示されます';const m=p/monthly;return m<1?'約 <b>1ヶ月未満</b> で回収できる試算':`約 <b>${m.toFixed(1)}ヶ月</b> で回収できる試算`;};
+  $('rPlans').innerHTML=`<div class="plan-hero"><div class="pn">${CONFIG.planHero.name}</div><div class="pp">${yen(CONFIG.planHero.price)}（税込）</div><div class="pdesc">${CONFIG.planHero.desc}</div><div class="pr">${rec(CONFIG.planHero.price)}</div></div>
+    <div class="plan-sub"><div class="pn">${CONFIG.planSecond.name}<span class="tag">${CONFIG.planSecond.tag}</span></div><div class="pp">${yen(CONFIG.planSecond.price)}（税込）</div><div class="pr">${rec(CONFIG.planSecond.price)}</div></div>
     <div class="budget">※ご予算面のご相談も、個別に承ります</div>`;
 
   $('disc').textContent=`※本診断は選択内容に基づく一般的な概算です。金額は年商規模「${CONFIG.scales[state.scale].t}」を前提に試算しています。想定運用利回りは年${CONFIG.yieldTarget*100}%(概算)、累積は${CONFIG.horizon}年で計算。実際の効果・可否は個別相談でお伝えします。`;
+  return d;
 }
 
-/* ---- save ---- */
-function collect(){
-  const d=compute();
-  const ans={};
-  QA.forEach(it=>{const s=state.A[it.id]; if(s!=null)ans[it.q]=it.o[s][0];});
-  QB.forEach(it=>{const s=state.B[it.id]; if(s!=null){ const lab=it.custom?it.custom[s][0]:(it.labels?it.labels[s]:['やっている','やっていない','知らない'][s]); ans[it.q]=lab; }});
-  QC.forEach(it=>{const s=state.C[it.id]; if(s!=null)ans[it.q]=it.o[s][0];});
-  return {
-    ts:new Date().toISOString(),
-    name:$('fName').value||'', company:$('fCompany').value||'',
-    scale:CONFIG.scales[state.scale].t,
-    lossManPerYear:Math.round(d.lossMan), score:d.score,
-    diagnosisType:d.type?d.type.title:'', unknownCount:d.unknown,
-    answers:ans,
-  };
+/* screen switch */
+function goResult(){renderResult();$('screen1').classList.add('hidden');$('navbar').classList.add('hidden');$('screen2').classList.remove('hidden');
+  $('stp1').classList.remove('on');$('stp2').classList.add('on');window.scrollTo(0,0);}
+function goBack(){$('screen2').classList.add('hidden');$('screen1').classList.remove('hidden');$('navbar').classList.remove('hidden');
+  $('stp2').classList.remove('on');$('stp1').classList.add('on');window.scrollTo(0,0);}
+
+/* toast */
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+/* collect for logging */
+function collect(d){const ans={};
+  QA.forEach(it=>{const s=state.A[it.id];if(s!=null)ans[it.q]=it.o[s][0];});
+  QB.forEach(it=>{const s=state.B[it.id];if(s!=null)ans[it.q]=it.custom?it.custom[s][0]:(it.labels?it.labels[s]:['やっている','やっていない','知らない'][s]);});
+  QC.forEach(it=>{const s=state.C[it.id];if(s!=null)ans[it.q]=it.o[s][0];});
+  return{ts:new Date().toISOString(),name:$('fName').value||'',company:$('fCompany').value||'',scale:CONFIG.scales[state.scale].t,
+    lossManPerYear:Math.round(d.lossMan),score:d.score,diagnosisType:d.type?d.type.title:'',unknownCount:d.unknown,answers:ans};
 }
-function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* PDF 1枚 */
+function buildPdfPage(d){
+  const nm=$('fName').value.trim()||'社長';
+  const life=Math.round(d.lossMan*CONFIG.horizon+d.investGainMan);
+  const top=d.missList.slice().sort((a,b)=>b[1]-a[1]).slice(0,5)
+    .map(m=>`<tr><td style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,.1)">${m[0]}</td><td style="text-align:right;color:#ff8f83;font-weight:900;border-bottom:1px solid rgba(255,255,255,.1)">+${man(m[1])}万/年</td></tr>`).join('')
+    || '<tr><td style="padding:8px 0">主要な打ち手はカバーできています</td></tr>';
+  $('pdfPage').innerHTML=`
+   <div style="border:2px solid rgba(224,190,110,.5);border-radius:16px;padding:36px 34px;background:linear-gradient(160deg,#0e1642,#0a0f33)">
+     <div style="color:#f0d488;font-size:13px;letter-spacing:.2em;font-weight:700">MONEY RICH CEO ｜ 永江将典</div>
+     <div style="font-size:26px;font-weight:900;margin:6px 0 2px">${nm} の「手残り」診断結果</div>
+     <div style="color:#9fb0d6;font-size:13px">39の節税×資産運用メソッド 無料診断</div>
+     <div style="text-align:center;margin:26px 0 20px;padding:22px;border-radius:14px;background:rgba(181,23,0,.12);border:1px solid rgba(181,23,0,.4)">
+       <div style="color:#f0d488;font-size:14px;font-weight:700">このまま気づかず経営を続けた場合の</div>
+       <div style="font-size:16px;color:#c9d6f2">年間の想定取りこぼし額</div>
+       <div style="font-size:64px;font-weight:900;color:#ff6b5e;line-height:1.1;font-family:'Noto Serif JP',serif">${man(d.lossMan)}<span style="font-size:.3em;color:#f0d488"> 万円/年</span></div>
+     </div>
+     <div style="display:flex;gap:16px;margin-bottom:20px">
+       <div style="flex:1;padding:16px;border-radius:12px;background:rgba(255,255,255,.04);text-align:center">
+         <div style="color:#9fb0d6;font-size:12px">手残り最適化スコア</div>
+         <div style="font-size:38px;font-weight:900;font-family:'Noto Serif JP',serif;color:#ffd700">${d.score}<span style="font-size:.4em;color:#9fb0d6"> /100</span></div>
+       </div>
+       <div style="flex:1;padding:16px;border-radius:12px;background:rgba(255,255,255,.04);text-align:center">
+         <div style="color:#9fb0d6;font-size:12px">生涯(${CONFIG.horizon}年)の累積損失</div>
+         <div style="font-size:38px;font-weight:900;font-family:'Noto Serif JP',serif;color:#ff8f83">${man(life)}<span style="font-size:.4em;color:#9fb0d6"> 万円</span></div>
+       </div>
+     </div>
+     <div style="font-size:14px;font-weight:800;color:#f0d488;margin-bottom:6px">あなたが今、取りこぼしている主な打ち手</div>
+     <table style="width:100%;border-collapse:collapse;font-size:13px">${top}</table>
+     <div style="margin-top:18px;padding:14px 16px;border-radius:12px;border:1px solid rgba(224,190,110,.4);background:rgba(240,212,136,.1)">
+       <div style="font-size:13px;color:#e9d9ad">診断タイプ：<b style="color:#ffd700">${d.type?d.type.title:'-'}</b></div>
+       <div style="font-size:12px;color:#c4d0ec;margin-top:4px">${d.type?d.type.desc:''}</div>
+     </div>
+     <div style="margin-top:20px;font-size:11px;color:#8494b8;line-height:1.6">
+       ※本診断は一般的な前提に基づく概算(試算)であり、実際の税額・運用成果を保証・予測するものではありません。将来の運用成果を保証するものではありません。具体的な適用可否は個別にご相談ください。<br>
+       発行：マネーリッチCEOラウンジ（永江将典）
+     </div>
+   </div>`;
+  return $('pdfPage');
+}
+
 async function saveResult(){
-  const payload=collect();
-  // localStorage には常に退避
-  try{ const arr=JSON.parse(localStorage.getItem('mrc_sim_saves')||'[]'); arr.push(payload); localStorage.setItem('mrc_sim_saves',JSON.stringify(arr)); }catch(e){}
+  const btn=$('saveBtn');btn.disabled=true;const orig=btn.textContent;btn.textContent='PDFを作成しています…';
+  const d=compute();
+  const payload=collect(d);
+  try{const arr=JSON.parse(localStorage.getItem('mrc_sim_saves')||'[]');arr.push(payload);localStorage.setItem('mrc_sim_saves',JSON.stringify(arr));}catch(e){}
+  let dataUrl='';
+  try{
+    const el=buildPdfPage(d);
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const canvas=await html2canvas(el,{scale:2,backgroundColor:'#0a0f33',useCORS:true,logging:false});
+    dataUrl=canvas.toDataURL('image/jpeg',0.92);
+    const {jsPDF}=window.jspdf;const pdf=new jsPDF({unit:'pt',format:'a4',orientation:'portrait'});
+    const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
+    const ratio=canvas.height/canvas.width;let w=pw,h=pw*ratio;if(h>ph){h=ph;w=ph/ratio;}
+    pdf.addImage(dataUrl,'JPEG',(pw-w)/2,10,w,h);
+    const fn=(payload.name||'手残り診断').replace(/[\\/:*?"<>|]/g,'')+'_手残り診断.pdf';
+    pdf.save(fn);
+    $('stp2').classList.remove('on');$('stp3').classList.add('on');
+    toast('PDFをダウンロードしました');
+  }catch(err){ toast('PDF作成でエラーが発生しました'); console.error(err); }
+  // Google Drive 共有リンク自動発行（GASデプロイ後に有効）
   if(CONFIG.saveEndpoint){
     try{
-      await fetch(CONFIG.saveEndpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-      showToast('保存しました（記録に送信）');
-    }catch(e){ showToast('保存しました（端末に退避）'); }
-  } else {
-    showToast('保存しました（端末に退避）');
+      const body=JSON.stringify(Object.assign({},payload,{pdfBase64:dataUrl}));
+      const res=await fetch(CONFIG.saveEndpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body});
+      const j=await res.json().catch(()=>null);
+      if(j&&j.url){const lb=$('linkbox');lb.style.display='block';lb.innerHTML=`共有リンク：<a href="${j.url}" target="_blank">${j.url}</a>`;}
+    }catch(e){ /* 記録は端末に退避済み */ }
   }
+  btn.disabled=false;btn.textContent=orig;
 }
 
-/* ---- init ---- */
+/* init */
 buildScale();
 buildQ(QA,'secA','A',it=>it.o.map(o=>o[0]));
-buildQ(QB,'secB','B',it=> it.custom?it.custom.map(c=>c[0]):(it.labels||['やっている','やっていない','知らない']));
+buildQ(QB,'secB','B',it=>it.custom?it.custom.map(c=>c[0]):(it.labels||['やっている','やっていない','知らない']));
 buildQ(QC,'secC','C',it=>it.o.map(o=>o[0]));
+updateProgress();
+$('revealBtn').addEventListener('click',()=>{if(answeredCount()>=TOTAL)goResult();});
+$('backBtn').addEventListener('click',goBack);
 $('saveBtn').addEventListener('click',saveResult);
-$('ctaBtn').addEventListener('click',()=>showToast('個別相談で、この方専用のプランを組みましょう'));
-render();
 </script>
 </body>
 </html>
