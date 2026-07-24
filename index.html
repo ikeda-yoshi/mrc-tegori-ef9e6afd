@@ -168,7 +168,7 @@ body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);line-heigh
   <div class="head-in">
     <div class="brand">
       <div class="k">MONEY RICH CEO ｜ 永江将典</div>
-      <h1>社長の手残り診断<span class="g"> ── あなたは「知らないだけ」でいくら損しているか</span></h1>
+      <h1>社長の手残り診断<span class="g"> ── あなたの手残りは、いくら取りこぼしているか</span></h1>
     </div>
     <div class="confid">個別相談用ツール（社外秘）</div>
   </div>
@@ -200,7 +200,7 @@ body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);line-heigh
   </div>
   <div class="card">
     <div class="sec-head"><div class="sec-badge">B</div><h2>節税メソッドの実施状況</h2></div>
-    <div class="sec-sub">やっていない・知らないものが、そのまま「取りこぼしている金額」になります</div>
+    <div class="sec-sub">やっていないものが、そのまま「取りこぼしている金額」になります</div>
     <div id="secB"></div>
   </div>
   <div class="card">
@@ -396,7 +396,6 @@ function renderResult(){
   $('rWho').textContent=nm?`${nm} の診断結果`:'診断結果';
   $('rBig').innerHTML=`${man(d.lossMan)}<small> 万円/年</small>`;
   let nt=`年間およそ ${man(d.lossMan)}万円 の手残りを取りこぼしている可能性があります`;
-  if(d.unknown>0)nt+=`／「知らない」が ${d.unknown}個 ありました`;
   $('rNote').textContent=nt;
 
   // score ring
@@ -477,7 +476,7 @@ function buildPdfPage(d){
      <div style="display:flex;gap:12px;flex-wrap:wrap">
        <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">会社規模</div><div style="font-size:18px;font-weight:800">年商 ${CONFIG.scales[state.scale].t}</div></div>
        <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">支援体制で気になる点</div><div style="font-size:18px;font-weight:800">${d.holes} 件</div></div>
-       <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">節税で未着手・未確認</div><div style="font-size:18px;font-weight:800">${notDone} 件${d.unknown?`（知らない ${d.unknown}）`:''}</div></div>
+       <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">節税で未着手・未確認</div><div style="font-size:18px;font-weight:800">${notDone} 件</div></div>
        <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">余剰資金の現状</div><div style="font-size:16px;font-weight:800">${c1}</div></div>
      </div>
 
