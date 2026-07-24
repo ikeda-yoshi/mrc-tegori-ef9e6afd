@@ -451,38 +451,45 @@ function collect(d){const ans={};
 /* PDF 1枚 */
 function buildPdfPage(d){
   const nm=$('fName').value.trim()||'社長';
-  const life=Math.round(d.lossMan*CONFIG.horizon+d.investGainMan);
-  const top=d.missList.slice().sort((a,b)=>b[1]-a[1]).slice(0,5)
-    .map(m=>`<tr><td style="padding:7px 0;border-bottom:1px solid rgba(255,255,255,.1)">${m[0]}</td><td style="text-align:right;color:#ff8f83;font-weight:900;border-bottom:1px solid rgba(255,255,255,.1)">+${man(m[1])}万/年</td></tr>`).join('')
-    || '<tr><td style="padding:8px 0">主要な打ち手はカバーできています</td></tr>';
+  const comp=$('fCompany').value.trim();
+  const missNames=d.missList.slice().sort((a,b)=>b[1]-a[1]).map(m=>m[0]);
+  const notDone=missNames.length;
+  const c1=state.C['c1']!=null?QC[0].o[state.C['c1']][0]:'—';
+  const topList=(missNames.length?missNames.slice(0,7):['主要な打ち手はカバーできています'])
+    .map(n=>`<tr><td style="padding:7px 2px;border-bottom:1px solid rgba(255,255,255,.1);font-size:13px">・${n}</td></tr>`).join('');
   $('pdfPage').innerHTML=`
    <div style="border:2px solid rgba(224,190,110,.5);border-radius:16px;padding:36px 34px;background:linear-gradient(160deg,#0e1642,#0a0f33)">
      <div style="color:#f0d488;font-size:13px;letter-spacing:.2em;font-weight:700">MONEY RICH CEO ｜ 永江将典</div>
      <div style="font-size:26px;font-weight:900;margin:6px 0 2px">${nm} の「手残り」診断結果</div>
-     <div style="color:#9fb0d6;font-size:13px">39の節税×資産運用メソッド 無料診断</div>
-     <div style="text-align:center;margin:26px 0 20px;padding:22px;border-radius:14px;background:rgba(181,23,0,.12);border:1px solid rgba(181,23,0,.4)">
-       <div style="color:#f0d488;font-size:14px;font-weight:700">このまま気づかず経営を続けた場合の</div>
-       <div style="font-size:16px;color:#c9d6f2">年間の想定取りこぼし額</div>
-       <div style="font-size:64px;font-weight:900;color:#ff6b5e;line-height:1.1;font-family:'Noto Serif JP',serif">${man(d.lossMan)}<span style="font-size:.3em;color:#f0d488"> 万円/年</span></div>
+     <div style="color:#9fb0d6;font-size:13px">39の節税×資産運用メソッド 無料診断${comp?'　／　'+comp:''}</div>
+
+     <div style="font-size:15px;font-weight:800;color:#f0d488;margin:24px 0 10px">■ ヒアリング結果</div>
+     <div style="display:flex;gap:12px;flex-wrap:wrap">
+       <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">会社規模</div><div style="font-size:18px;font-weight:800">年商 ${CONFIG.scales[state.scale].t}</div></div>
+       <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">支援体制で気になる点</div><div style="font-size:18px;font-weight:800">${d.holes} 件</div></div>
+       <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">節税で未着手・未確認</div><div style="font-size:18px;font-weight:800">${notDone} 件${d.unknown?`（知らない ${d.unknown}）`:''}</div></div>
+       <div style="flex:1;min-width:150px;padding:14px;border-radius:12px;background:rgba(255,255,255,.04)"><div style="color:#9fb0d6;font-size:12px">余剰資金の現状</div><div style="font-size:16px;font-weight:800">${c1}</div></div>
      </div>
-     <div style="display:flex;gap:16px;margin-bottom:20px">
-       <div style="flex:1;padding:16px;border-radius:12px;background:rgba(255,255,255,.04);text-align:center">
+
+     <div style="font-size:15px;font-weight:800;color:#f0d488;margin:24px 0 10px">■ 診断結果</div>
+     <div style="display:flex;gap:16px;align-items:stretch">
+       <div style="width:180px;padding:18px;border-radius:12px;background:rgba(255,255,255,.04);text-align:center">
          <div style="color:#9fb0d6;font-size:12px">手残り最適化スコア</div>
-         <div style="font-size:38px;font-weight:900;font-family:'Noto Serif JP',serif;color:#ffd700">${d.score}<span style="font-size:.4em;color:#9fb0d6"> /100</span></div>
+         <div style="font-size:46px;font-weight:900;font-family:'Noto Serif JP',serif;color:#ffd700;line-height:1.1">${d.score}<span style="font-size:.35em;color:#9fb0d6"> /100</span></div>
        </div>
-       <div style="flex:1;padding:16px;border-radius:12px;background:rgba(255,255,255,.04);text-align:center">
-         <div style="color:#9fb0d6;font-size:12px">生涯(${CONFIG.horizon}年)の累積損失</div>
-         <div style="font-size:38px;font-weight:900;font-family:'Noto Serif JP',serif;color:#ff8f83">${man(life)}<span style="font-size:.4em;color:#9fb0d6"> 万円</span></div>
+       <div style="flex:1;padding:18px;border-radius:12px;border:1px solid rgba(224,190,110,.4);background:rgba(240,212,136,.1)">
+         <div style="font-size:13px;color:#e9d9ad">診断タイプ：<b style="color:#ffd700">${d.type?d.type.title:'—'}</b></div>
+         <div style="font-size:12.5px;color:#c4d0ec;margin-top:5px">${d.type?d.type.desc:''}</div>
        </div>
      </div>
-     <div style="font-size:14px;font-weight:800;color:#f0d488;margin-bottom:6px">あなたが今、取りこぼしている主な打ち手</div>
-     <table style="width:100%;border-collapse:collapse;font-size:13px">${top}</table>
-     <div style="margin-top:18px;padding:14px 16px;border-radius:12px;border:1px solid rgba(224,190,110,.4);background:rgba(240,212,136,.1)">
-       <div style="font-size:13px;color:#e9d9ad">診断タイプ：<b style="color:#ffd700">${d.type?d.type.title:'-'}</b></div>
-       <div style="font-size:12px;color:#c4d0ec;margin-top:4px">${d.type?d.type.desc:''}</div>
+     <div style="font-size:13.5px;font-weight:800;color:#f0d488;margin:18px 0 4px">まだ活用できていない主な打ち手</div>
+     <table style="width:100%;border-collapse:collapse">${topList}</table>
+
+     <div style="margin-top:20px;padding:13px 16px;border-radius:12px;background:rgba(255,255,255,.04)">
+       <div style="font-size:12px;color:#c4d0ec">※制度の見直しは、早い方で当月から着手いただけます（あくまで目安であり、成果や達成時期を保証するものではありません。効果・期間には個人差があります）。</div>
      </div>
-     <div style="margin-top:20px;font-size:11px;color:#8494b8;line-height:1.6">
-       ※本診断は一般的な前提に基づく概算(試算)であり、実際の税額・運用成果を保証・予測するものではありません。将来の運用成果を保証するものではありません。具体的な適用可否は個別にご相談ください。<br>
+     <div style="margin-top:14px;font-size:11px;color:#8494b8;line-height:1.6">
+       ※本診断結果は一般的な情報提供であり、<b style="color:#ffb3ab">成果を保証するものではありません</b>。実際の税額・効果・期間には個人差があります。具体的な適用可否は税理士（永江将典）に個別にご相談ください。<br>
        発行：マネーリッチCEOラウンジ（永江将典）
      </div>
    </div>`;
