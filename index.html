@@ -211,11 +211,8 @@ body{font-family:"Noto Sans JP",system-ui,sans-serif;color:var(--ink);line-heigh
 </div>
 <div class="navbar" id="navbar">
   <div class="in">
-    <div class="prog">
-      <div class="pt" id="progText">0 / 0 問</div>
-      <div class="pbar"><i id="progBar"></i></div>
-    </div>
-    <button class="btnbig" id="revealBtn" disabled>診断結果を見る →</button>
+    <div class="prog" style="font-size:12.5px;color:var(--sub);font-weight:700;line-height:1.5">回答はあらかじめ入力済みです。<br>お話を伺いながら、違う点だけ選び直してください</div>
+    <button class="btnbig" id="revealBtn">診断結果を見る →</button>
   </div>
 </div>
 
@@ -297,7 +294,7 @@ const CONFIG = {
   saveEndpoint:'', // GASデプロイ後にWeb App URLを設定
 };
 const QA=[
-  {id:'a1',q:'顧問税理士との付き合い年数',o:[['1年未満',0],['1〜3年',0],['3〜10年',1],['10年以上',2]]},
+  {id:'a1',q:'顧問税理士との付き合い年数',o:[['1年未満',0],['1〜3年',0],['3〜5年',0],['5〜10年',1],['10年以上',2]]},
   {id:'a2',q:'税理士は節税を向こうから提案してくれる',o:[['してくる',0],['聞かないとしない',2],['ほぼしない',3]]},
   {id:'a3',q:'事前確定届出給与',o:[['やっている',0],['やっていない',2],['知らない',3]]},
   {id:'a4',q:'退職金まで考えた役員報酬設計',o:[['やっている',0],['やっていない',2],['知らない',3]]},
@@ -336,9 +333,9 @@ const state={scale:CONFIG.defaultScaleIndex,A:{},B:{},C:{}};
 // デフォルト選択（永江さんは違う所だけ動かせばよい）：年数・年商=中間／節税(B)・運用(C)=ネガティブ
 const DEFAULTS={
   scale:2, // 年商=中間(5000万〜1億)
-  A:{a1:2,a2:1,a3:1,a4:1,a5:1,a6:1,a7:2,a8:1,a9:1,a10:1,a11:1,a12:1,a13:1,a14:1}, // a1年数=中間(3〜10年)/a5,a6=普通/a7=ない/他=不足側
-  B:{b1:1,b2:1,b3:2,b4:1,b5:1,b6:1,b7:1,b8:1,b9:1,b10:1,b11:1,b12:1,b13:1}, // やっていない/未加入/使っていない
-  C:{c1:0,c2:0,c3:2,c4:1,c5:1,c6:2,c7:1,c8:1}, // ほぼ預金/0〜1%/使っていない/寝かせている 等
+  A:{a1:2,a2:2,a3:2,a4:2,a5:1,a6:1,a7:2,a8:1,a9:1,a10:1,a11:1,a12:1,a13:1,a14:1}, // a1=3〜5年/a2ほぼしない/a3,a4知らない/a5,a6=普通/a7=ない/他=弱い(いない・くれない)
+  B:{b1:2,b2:2,b3:2,b4:2,b5:2,b6:2,b7:2,b8:2,b9:2,b10:2,b11:2,b12:2,b13:2}, // すべて「知らない」(b3=使っていない/b4,b5=知らない)
+  C:{c1:0,c2:0,c3:2,c4:1,c5:1,c6:2,c7:1,c8:1}, // ほぼ預金/0〜1%/使っていない/寝かせている 等(弱い側)
 };
 const $=id=>document.getElementById(id);
 const man=v=>Math.round(v).toLocaleString('ja-JP');
@@ -370,8 +367,7 @@ function applyDefaults(){
   updateProgress();
 }
 function answeredCount(){return Object.keys(state.A).length+Object.keys(state.B).length+Object.keys(state.C).length;}
-function updateProgress(){const a=answeredCount();$('progText').textContent=`${a} / ${TOTAL} 問`;$('progBar').style.width=(a/TOTAL*100)+'%';
-  const btn=$('revealBtn');btn.disabled=a<TOTAL;btn.textContent=a<TOTAL?`あと ${TOTAL-a} 問で結果が見られます`:'診断結果を見る →';}
+function updateProgress(){const btn=$('revealBtn');const a=answeredCount();btn.disabled=a<TOTAL;btn.textContent=a<TOTAL?`あと ${TOTAL-a} 問`:'診断結果を見る →';}
 
 function compute(){
   const f=CONFIG.scales[state.scale].f;let aGap=0,holes=0;
