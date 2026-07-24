@@ -311,9 +311,9 @@ const QA=[
 ];
 const QB=[
   {id:'b1',q:'役員報酬と社会保険料の最適化',e:100},{id:'b2',q:'旅費規程(日当)の活用',e:100},
-  {id:'b3',q:'出張日当の非課税枠を使い切っている',e:100,custom:[['使い切っている',0,0],['一部',1.5,50],['使っていない',3,100]]},
-  {id:'b4',q:'倒産防止共済(最大800万損金)',e:80,labels:['加入済み','未加入','知らない']},
-  {id:'b5',q:'小規模企業共済',e:30,labels:['加入済み','未加入','知らない']},
+  {id:'b3',q:'出張日当の非課税枠の活用',e:100},
+  {id:'b4',q:'倒産防止共済(最大800万損金)',e:80},
+  {id:'b5',q:'小規模企業共済',e:30},
   {id:'b6',q:'一時所得・海外生保の非課税枠(家族分散)',e:50},{id:'b7',q:'即時償却(経営強化税制)の活用',e:60},
   {id:'b8',q:'不動産・ワンルームによる所得圧縮',e:40},{id:'b9',q:'福利厚生プランの整備',e:20},
   {id:'b10',q:'家族への所得分散(役員・従業員化)',e:50},{id:'b11',q:'経費計上の再定義(グレーゾーンの適正活用)',e:40},
@@ -334,7 +334,7 @@ const state={scale:CONFIG.defaultScaleIndex,A:{},B:{},C:{}};
 const DEFAULTS={
   scale:2, // 年商=中間(5000万〜1億)
   A:{a1:2,a2:2,a3:2,a4:2,a5:1,a6:1,a7:2,a8:1,a9:1,a10:1,a11:1,a12:1,a13:1,a14:1}, // a1=3〜5年/a2ほぼしない/a3,a4知らない/a5,a6=普通/a7=ない/他=弱い(いない・くれない)
-  B:{b1:2,b2:2,b3:2,b4:2,b5:2,b6:2,b7:2,b8:2,b9:2,b10:2,b11:2,b12:2,b13:2}, // すべて「知らない」(b3=使っていない/b4,b5=知らない)
+  B:{b1:1,b2:1,b3:1,b4:1,b5:1,b6:1,b7:1,b8:1,b9:1,b10:1,b11:1,b12:1,b13:1}, // すべて「やっていない」
   C:{c1:0,c2:0,c3:2,c4:1,c5:1,c6:2,c7:1,c8:1}, // ほぼ預金/0〜1%/使っていない/寝かせている 等(弱い側)
 };
 const $=id=>document.getElementById(id);
@@ -355,7 +355,7 @@ function colorClass(gap,pos){if(gap>=2.4)return'warn';if(gap>=1)return'mid';retu
 function paintSelection(b,group,id,idx){b.classList.add('on');
   if(group==='S')b.classList.add('neut');
   else if(group==='A')b.classList.add(colorClass(QA.find(x=>x.id===id).o[idx][1],true));
-  else if(group==='B'){const it=QB.find(x=>x.id===id);b.classList.add(it.custom?colorClass(it.custom[idx][1],true):(idx===0?'good':'warn'));}
+  else if(group==='B'){b.classList.add(idx===0?'good':'warn');}
   else if(group==='C')b.classList.add(colorClass(QC.find(x=>x.id===id).o[idx][1],true));}
 
 function applyDefaults(){
@@ -374,8 +374,7 @@ function compute(){
   QA.forEach(it=>{const s=state.A[it.id];if(s==null)return;const g=it.o[s][1];aGap+=g;if(g>=2)holes++;});
   let bGap=0,lossMan=0,unknown=0;const missList=[];
   QB.forEach(it=>{const s=state.B[it.id];if(s==null)return;
-    if(it.custom){const c=it.custom[s];bGap+=c[1];const y=c[2]*f;if(y>0){lossMan+=y;missList.push([it.q,y]);}}
-    else{if(s!==0){bGap+=3;const y=it.e*f;lossMan+=y;missList.push([it.q,y]);if(s===2)unknown++;}}});
+    if(s===1){bGap+=3;const y=it.e*f;lossMan+=y;missList.push([it.q,y]);}});
   let cGap=0;QC.forEach(it=>{const s=state.C[it.id];if(s==null)return;cGap+=it.o[s][1];});
   const score=Math.max(0,Math.min(100,Math.round(100-(aGap+bGap+cGap))));
   const pmt=lossMan*10000,r=CONFIG.yieldTarget,n=CONFIG.horizon;
@@ -453,7 +452,7 @@ function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');set
 /* collect for logging */
 function collect(d){const ans={};
   QA.forEach(it=>{const s=state.A[it.id];if(s!=null)ans[it.q]=it.o[s][0];});
-  QB.forEach(it=>{const s=state.B[it.id];if(s!=null)ans[it.q]=it.custom?it.custom[s][0]:(it.labels?it.labels[s]:['やっている','やっていない','知らない'][s]);});
+  QB.forEach(it=>{const s=state.B[it.id];if(s!=null)ans[it.q]=['やっている','やっていない'][s];});
   QC.forEach(it=>{const s=state.C[it.id];if(s!=null)ans[it.q]=it.o[s][0];});
   return{ts:new Date().toISOString(),name:$('fName').value||'',company:$('fCompany').value||'',scale:CONFIG.scales[state.scale].t,
     lossManPerYear:Math.round(d.lossMan),score:d.score,diagnosisType:d.type?d.type.title:'',unknownCount:d.unknown,answers:ans};
@@ -542,7 +541,7 @@ async function saveResult(){
 /* init */
 buildScale();
 buildQ(QA,'secA','A',it=>it.o.map(o=>o[0]));
-buildQ(QB,'secB','B',it=>it.custom?it.custom.map(c=>c[0]):(it.labels||['やっている','やっていない','知らない']));
+buildQ(QB,'secB','B',()=>['やっている','やっていない']);
 buildQ(QC,'secC','C',it=>it.o.map(o=>o[0]));
 applyDefaults();
 $('revealBtn').addEventListener('click',()=>{if(answeredCount()>=TOTAL)goResult();});
